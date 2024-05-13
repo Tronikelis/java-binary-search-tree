@@ -11,5 +11,17 @@ public class Main {
         bst.insert(4);
 
         bst.print();
+
+        bst.remove(10);
+
+        bst.print();
+
+        System.out.println("\n\n\n");
+
+        bst.remove(11);
+
+        System.out.println("\n\n\n");
+
+        bst.print();
     }
 }
