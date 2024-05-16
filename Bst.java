@@ -1,3 +1,6 @@
+import java.util.ArrayList;
+import java.util.List;
+
 class BstNode {
     Integer data;
 
@@ -10,11 +13,96 @@ class BstNode {
     }
 }
 
+class LambdaSafe<T> {
+    private T obj;
+
+    public LambdaSafe(T obj) {
+        this.obj = obj;
+    }
+
+    public T get() {
+        return this.obj;
+    }
+
+    public void set(T obj) {
+        this.obj = obj;
+    }
+}
+
 public class Bst {
     BstNode root;
 
     public Bst() {
         this.root = null;
+    }
+
+    interface ForEachLeaf {
+        void run(BstNode leaf);
+    }
+
+    private void forEachLeaf(BstNode node, ForEachLeaf cb) {
+        if (node.left == null && node.right == null) {
+            cb.run(node);
+            return;
+        }
+
+        if (node.left != null) {
+            forEachLeaf(node.left, cb);
+        }
+
+        if (node.right != null) {
+            forEachLeaf(node.right, cb);
+        }
+    }
+
+    public Pair<List<BstNode>, Integer> findSmallestPath() {
+        LambdaSafe<List<BstNode>> smallestList = new LambdaSafe<>(new ArrayList<>());
+        LambdaSafe<Integer> smallestSum = new LambdaSafe<>(Integer.MAX_VALUE);
+
+        this.forEachLeaf(this.root, (leaf -> {
+            List<BstNode> currentList = new ArrayList<>();
+
+            Integer currentSum = 0;
+            BstNode currentNode = leaf;
+
+            while (currentNode != null) {
+                currentSum += currentNode.data;
+                currentNode = currentNode.parent;
+                currentList.add(currentNode);
+            }
+
+            if (currentSum < smallestSum.get()) {
+                smallestList.set(currentList);
+                smallestSum.set(currentSum);
+            }
+        }));
+
+        return new Pair<List<BstNode>, Integer>(smallestList.get(), smallestSum.get());
+    }
+
+    public Pair<List<BstNode>, Integer> findBiggestPath() {
+        LambdaSafe<List<BstNode>> biggestList = new LambdaSafe<>(new ArrayList<>());
+        LambdaSafe<Integer> biggestSum = new LambdaSafe<>(0);
+
+        this.forEachLeaf(this.root, (leaf -> {
+            List<BstNode> currentList = new ArrayList<>();
+
+            Integer currentSum = 0;
+            BstNode currentNode = leaf;
+
+            while (currentNode != null) {
+                currentSum += currentNode.data;
+                currentNode = currentNode.parent;
+                currentList.add(currentNode);
+            }
+
+            if (currentSum > biggestSum.get()) {
+                biggestList.set(currentList);
+                biggestSum.set(currentSum);
+            }
+        }));
+
+        return new Pair<List<BstNode>, Integer>(biggestList.get(), biggestSum.get());
     }
 
     private void detachFromParent(BstNode node) {

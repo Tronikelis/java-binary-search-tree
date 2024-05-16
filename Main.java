@@ -1,3 +1,5 @@
+import java.util.List;
+
 public class Main {
     public static void main(String[] args) {
         Bst bst = new Bst();
@@ -23,5 +25,11 @@ public class Main {
         System.out.println("\n\n\n");
 
         bst.print();
+
+        Pair<List<BstNode>, Integer> biggestPath = bst.findBiggestPath();
+        Pair<List<BstNode>, Integer> smallestPath = bst.findSmallestPath();
+
+        System.out.println("biggest path: " + biggestPath.second.toString());
+        System.out.println("smallest path: " + smallestPath.second.toString());
     }
 }
